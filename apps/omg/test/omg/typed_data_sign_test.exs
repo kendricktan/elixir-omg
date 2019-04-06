@@ -25,8 +25,14 @@ defmodule OMG.TypedDataSignTest do
     # This account was used with metamask to create signatures - do not change!
     @signer <<34, 88, 165, 39, 152, 80, 246, 251, 120, 136, 138, 126, 69, 234, 42, 94, 177, 179, 196, 54>>
 
-    # TODO inline computation here
-    @test_domain_separator <<0::256>>
+    @test_domain_separator TypedDataSign.domain_separator(
+                             "OMG Network",
+                             "1",
+                             4,
+                             "1C56346CD2A2Bf3202F771f50d3D14a367B48070" |> Base.decode16!(case: :mixed),
+                             "f2d857f4a3edcb9b78b4d503bfe733db1e3f6cdc2b7971ee739626c97e86a558"
+                             |> Base.decode16!(case: :mixed)
+                           )
 
     @other_addr <<1, 35, 69, 103, 137, 171, 205, 239, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0>>
     @eth <<0::160>>

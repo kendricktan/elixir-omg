@@ -1,0 +1,10 @@
+FROM python:3.6.8-stretch
+
+COPY ./metrics.py /app/
+
+RUN chmod +x /app/metrics.py
+
+RUN pip install --upgrade pip \
+  && pip install requests retry flask psutil
+
+ENTRYPOINT ["python", "/app/metrics.py"]

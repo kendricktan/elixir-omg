@@ -1,5 +1,64 @@
 version: "2.1"
 services:
+  metrics-server:
+    build:
+      context: .
+      dockerfile: Dockerfile-metrics
+    entrypoint: python /app/metrics.py
+    ports:
+      - "127.0.0.1:8081:8081"
+    hostname: metrics-server
+    networks:
+      - net
+    healthcheck:
+      test: curl localhost:8081
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  cadvisor:
+    image: google/cadvisor
+    ports:
+      - 8080:8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+    networks:
+      - net
+
+  metrics-gateway:
+    image: prom/pushgateway
+    ports:
+      - 9091:9091
+
+  grafana-ui:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=secret
+    links:
+      - prometheus-server:prometheus
+    networks:
+      - net
+
+  prometheus-server:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    links:
+      - metrics-server:metrics-server
+      - cadvisor:cadvisor
+      - metrics-gateway:metrics-gateway
+    depends_on:
+      - metrics-server
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - net
+
   geth:
     image: ethereum/client-go:v1.8.21
     entrypoint: /bin/sh -c "apk add curl && geth --targetgaslimit "6200000" --dev --dev.period 1 --rpc --rpcapi personal,web3,eth,net --rpcaddr 0.0.0.0 --rpcvhosts=* --rpcport=8545"
@@ -90,3 +149,6 @@ services:
     depends_on:
       childchain:
         condition: service_healthy
+
+networks:
+  net:

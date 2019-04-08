@@ -45,6 +45,8 @@ RUN usermod -aG sudo elixir-user
 
 COPY . /home/elixir-user/elixir-omg/
 
+RUN rm /home/elixir-user/elixir-omg/metrics.py
+
 RUN chown -R elixir-user:elixir-user /home/elixir-user
 
 USER elixir-user
@@ -62,7 +64,8 @@ RUN wget https://github.com/ethereum/solidity/releases/download/v0.4.25/solc-sta
 
 RUN sudo -H pip3 install --upgrade pip \
   && sudo -H -n ln -s /usr/bin/python3 python \
-  && sudo -H -n pip3 install requests gitpython retry
+  && sudo -H -n pip3 install requests gitpython retry \
+  && sudo -H -n pip3 install flask
 
 WORKDIR /home/elixir-user/elixir-omg/
 

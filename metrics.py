@@ -18,7 +18,7 @@ def time_requests():
 
     start_time = time.time()
     try:
-        resp = requests.post('http://localhost:7434/status.get')
+        resp = requests.post('http://watcher:7434/status.get')
         status_code = resp.status_code
 
     except requests.exceptions.ConnectionError:
@@ -46,10 +46,10 @@ def metrics_endpoint():
     global request_caches
 
     ret_str = f"""
-# HELP status_get Status.get request metrics
-# TYPE status_get counter
+# HELP plasma_node_status_get Status.get request metrics
+# TYPE plasma_node_status_get counter
 # {request_caches['status_get_exception']}
-status_get{{status_code="{request_caches['status_get_resp_code']}"}} {request_caches['status_get_resp_time']}
+plasma_node_status_get{{status_code="{request_caches['status_get_resp_code']}"}} {request_caches['status_get_resp_time']}
 """
 
     return ret_str

@@ -1,7 +1,7 @@
 route:
-  receiver: 'eth_webhook'
+  receiver: 'ens_webhook'
 
 receivers:
-  - name: 'eth_webhook'
+  - name: 'ens_webhook'
     webhook_configs:
-    - url: https://ngrok.io # replace with your PagerTree webhook url
+    - url: http://ens-webhook:8082/webhook

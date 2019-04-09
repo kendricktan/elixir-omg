@@ -46,6 +46,7 @@ RUN usermod -aG sudo elixir-user
 COPY . /home/elixir-user/elixir-omg/
 
 RUN rm /home/elixir-user/elixir-omg/metrics.py
+RUN rm -rf /home/elixir-user/elixir-omg/ens-webhook
 
 RUN chown -R elixir-user:elixir-user /home/elixir-user
 

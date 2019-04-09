@@ -1,5 +1,18 @@
 version: "2.1"
 services:
+  ens-webhook:
+    build:
+      context: .
+      dockerfile: Dockerfile-enswebhook
+    entrypoint: "npm run start"
+    ports:
+      - "8082:8082"
+    healthcheck:
+      test: curl ens-webhook:8082
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
   metrics-server:
     build:
       context: .
@@ -41,6 +54,10 @@ services:
   
   alertmanager:
     image: prom/alertmanager:v0.12.0
+    volumes:
+      - ./alertmanager/:/etc/alertmanager/
+    command:
+      - '-config.file=/etc/alertmanager/config.yaml'
     ports:
       - 9093:9093
     restart: always
